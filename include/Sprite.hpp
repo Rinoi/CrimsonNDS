@@ -60,12 +60,19 @@ public:
 
 public:
 
-  const vec2f	&getPos() const
-  {return this->pos;}
-
-  Collider	*getCollider() const
-  {return this->collider;}
-  
+    const vec2f	&getPos() const
+	{return this->pos;}
+    
+    Collider	*getCollider() const
+	{return this->collider;}
+    
+    const char* getType() const {
+	if (this->type == MAIN)
+	    return "MAIN";
+	else
+	    return "SUB";
+    }
+    
 protected:
 
   bool		init();
