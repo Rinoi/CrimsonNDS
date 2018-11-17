@@ -86,6 +86,8 @@ bool		Engine::update()
   keys = keysUp();
   if((keys & KEY_A) && keyUA)
     keyUA();
+  if((keys & KEY_B) && keyUB)
+    keyUB();
   if((keys & KEY_UP) && keyUUp)
     keyUUp();
   if((keys & KEY_DOWN) && keyUDown)
@@ -100,6 +102,8 @@ bool		Engine::update()
   keys = keysDown();
   if((keys & KEY_A) && keyDA)
     keyDA();
+  if((keys & KEY_B) && keyDB)
+    keyDB();
   if((keys & KEY_UP) && keyDUp)
     keyDUp();
   if((keys & KEY_DOWN) && keyDDown)

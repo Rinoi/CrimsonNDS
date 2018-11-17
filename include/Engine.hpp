@@ -19,12 +19,14 @@ void	__attribute__((weak)) keyUp();
 void	__attribute__((weak)) keyDown();
 
 void	__attribute__((weak)) keyDA();
+void  __attribute__((weak)) keyDB();
 void	__attribute__((weak)) keyDUp();
 void	__attribute__((weak)) keyDDown();
 void	__attribute__((weak)) keyDLeft();
 void	__attribute__((weak)) keyDRight();
 
 void	__attribute__((weak)) keyUA();
+void  __attribute__((weak)) keyUB();
 void	__attribute__((weak)) keyUUp();
 void	__attribute__((weak)) keyUDown();
 void	__attribute__((weak)) keyULeft();

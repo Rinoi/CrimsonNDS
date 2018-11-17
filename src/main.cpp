@@ -1,6 +1,10 @@
 #include <nds.h>
 #include <stdio.h>
 
+#include <algorithm>
+#include <iostream>
+#include <list>
+
 #include "map.h"
 
 #include "hmap.h"
@@ -21,77 +25,85 @@
 
 #include "Mode.hpp"
 
+
+
+
 SpriteSheet	rogueLikeSheet((unsigned int *)rogueLikeTiles, rogueLikeTilesLen,
 			       pal, palLen,
 			       96, 160);
 //global for game
 TBackground	*bg;
 TBackground	*bg2;
+TBackground *bgs;
+TBackground *bgs2;
 Sprite		*a;
 BColliderMap	*CMap;
 BMap		*bMap;
-bool		jump = false;
-int		dt = 0;
+bool    miss = false;
+bool    jump = false;
+int	    dt = 0;
 float		v = 2.;
-int		sx = 0;
-int		bgx = 0;
+int		  sx = 0;
+int     sxx = 0;
+int		  bgx = 0;
 vec2f		g_v = {2, 0};
 
+std::list<Sprite *> my_list;
 
 //MAP
 
-const u16	O = 43;
-const u16	M = 24;
+const u16	O = 9;
+const u16	M = 2;
 
 u16		mapA[] =
   {
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
     M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
-    O, M, O, O, O, O, O, O, O, O, O, O, O, O, M, O,
-    O, O, M, O, O, O, O, O, O, O, O, O, M, M, O, O,
-    O, O, O, M, M, M, M, M, M, M, M, M, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M,
   };
 
 u16		mapB[] =
   {
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, M, M, O, O, O, O, O, O, O, O, O, O, O,
-    M, M, M, O, M, O, O, O, O, O, O, O, O, O, O, M,
-    O, O, O, O, M, O, O, O, O, O, O, O, O, O, M, O,
-    O, O, O, O, M, O, O, O, O, O, O, O, M, M, O, O,
-    O, O, O, O, M, M, M, M, M, M, M, M, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M,
   };
 
 u16		mapC[] =
   {
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
     M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, M, M, M, M, M, M, M, M, M, M, M, M, M, M, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
-    O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, O, O, O, O, O, O, O, O, O, O, O, O, O, O, M,
+    M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M,
   };
 
 constexpr static int	nbMap = 3;
@@ -107,24 +119,25 @@ bool		engineInit()
 {
   bg = new TBackground(TBackground::MAIN, BgSize_T_512x256, &rogueLikeSheet, TileLayer1, 16, 16, 1);
   bg2 = new TBackground(TBackground::MAIN, BgSize_T_512x256, &rogueLikeSheet, TileLayer1, 16, 16, 0);
+//  bgs = new TBackground(TBackground::SUB, BgSize_T_512x256, &rogueLikeSheet, TileLayer1, 16, 16, 1);
+//  bgs2 = new TBackground(TBackground::SUB, BgSize_T_512x256, &rogueLikeSheet, TileLayer1, 16, 16, 0);
 
   BMap	mapBG({16, 16}, {2, 1}, true);
   
   bMap = new BMap({16, 16}, {2, 1}, true);
   CMap = new BColliderMap(bMap, {16, 16}, {M});
 
-  mapBG.init(9);
-  bMap->init(O);
+  mapBG.init(1);
+  bMap->init(0);
   bMap->setMap(0, mapC);
   bMap->setMap(1, mapC);
   bg->addInMapT16(mapC, 16, 16, 0);
   bg->addInMapT16(mapC, 16, 16, 1);
   bg2->addInMapT16(mapBG.getData(), 16, 16, 0);
   bg2->addInMapT16(mapBG.getData(), 16, 16, 1);
-  // bg->addInMapT16(bMap->getMap(1).data, 16, 16, 1);
 
-  a = new Sprite(Sprite::MAIN, SpriteSize_16x16, &rogueLikeSheet, 42, Sprite::ABSOLUTE);
-  a->setPos(0, 0);
+  a = new Sprite(Sprite::MAIN, SpriteSize_16x16, &rogueLikeSheet, 50, Sprite::ABSOLUTE);
+  a->setPos(128, 180);
   a->addCollider({1, 1}, {14, 14}, CMap);
   
   return (true);
@@ -132,75 +145,66 @@ bool		engineInit()
 
 bool		enginePreUpdate()
 {
-  g_v = {v, 0};
-  
-  if (a->getPos().x - sx < 256/2)
-    g_v.x += v / 3.;
-  
-  if (jump == true)
-    {
-      dt += 1;
+  g_v = {v, 0};  
 
-      if (dt == 50)
-	{
-	  dt = 0;
-	  jump = false;
-	}
-      else if (a->getCollider()->willCollide({0, -v}) == false)
-	g_v.y -= v;
+  for (auto it=my_list.begin(); it != my_list.end(); ++it) {
+    if((*it)->getPos().y != 1)
+      (*it)->setPos((*it)->getPos().x, (*it)->getPos().y - 1);
+    else {
+ //     delete *it;
+      it = my_list.erase(it);
     }
-  else if (a->getCollider()->willCollide({0, v + 0.75f}) == false)
-    g_v.y += v + 0.75f;
-  a->setV(g_v.x, g_v.y);  
+  }
   return (true);
 }
-
-void		changeMap(int &bmap)
-{
-  u16	*map = maps[rand() % nbMap];
-      
-  bMap->setMap(bmap, map);
-  bg->addInMapT16(map, 16, 16, bmap);
-  bmap = (bmap + 1) % 2;
-  // printf("change %p\n", map);
-}
-
 bool		engineUpdate()
 {
-  static int	bmap = 0;
-  static bool	b = false;
-  
-  bg2->scroll(bgx, 0);
-  bg->scroll(sx, 0);
-  a->scroll(-sx, 0);
-  sx += v;
-  bgx += v / 2 > 0 ? v / 2 : 1;
-  // printf("%d\n", sx);
-  if (b == false && sx >= 256)
-    {
-      changeMap(bmap);
-      b = true;
-    }
-  if (sx >= 512)
-    {
-      a->setPos(a->getPos().x - 512, a->getPos().y);
-      sx = 0;
-      changeMap(bmap);
-      b = false;
-    }
+  // static int	bmap = 0;
+  // static bool	b = false;
   return (true);
 }
 
-
-void		keyDA()
+void		keyUp()
 {
-  jump = true;  
+    if (a->getPos().y > 1)
+      a->setPos(a->getPos().x, a->getPos().y - v);
 }
 
-void		keyUA()
+void    keyDown()
 {
-  jump = false;
-  dt = 0;
+    if (a->getPos().y  < 174)
+      a->setPos(a->getPos().x, a->getPos().y + v);
+}
+
+void    keyUA()
+{
+  Sprite *missil = new Sprite(Sprite::MAIN, SpriteSize_16x16, &rogueLikeSheet, 16, Sprite::ABSOLUTE);
+  missil->setPos(a->getPos().x, a->getPos().y - 16);
+  my_list.push_back(missil);
+}
+
+void    keyUB()
+{
+  int random = rand() % 240 + 6;
+  Sprite *mechant = new Sprite(Sprite::MAIN, SpriteSize_16x16, &rogueLikeSheet, 40, Sprite::ABSOLUTE);
+  mechant->setPos(random, 1);
+}
+
+
+void		keyRight()
+{
+    if (a->getPos().x > 240)
+      a->setPos(16, a->getPos().y);
+    else
+      a->setPos(a->getPos().x + v, a->getPos().y);
+}
+
+void		keyLeft()
+{
+  if (a->getPos().x < 6)
+    a->setPos(230, a->getPos().y);
+  else
+    a->setPos(a->getPos().x - v, a->getPos().y);
 }
 
 int		main()
