@@ -58,6 +58,7 @@ bool mode_pause = false;
 bool menu_screen = true;
 int menu_time = 0;
 bool bool_clignotement = true;
+
 Sprite *monster1;
 Sprite *monster2;
 Sprite *monster3;
@@ -68,7 +69,6 @@ std::list<Sprite *> list_blocks;
 std::list<Sprite *> list_vilain_missil;
 std::list<Sprite *> list_life;
 std::list<Sprite *> list_menu;
-
 
 //MAP
 
