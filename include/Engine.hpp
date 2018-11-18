@@ -10,6 +10,8 @@ bool	__attribute__((weak)) enginePreUpdate();
 
 void	__attribute__((weak)) keyA();
 void	__attribute__((weak)) keyB();
+void  __attribute__((weak)) keyX();
+void  __attribute__((weak)) keyY();
 void	__attribute__((weak)) keyStart();
 void	__attribute__((weak)) keySelect();
 void	__attribute__((weak)) keyDown();
@@ -20,6 +22,10 @@ void	__attribute__((weak)) keyDown();
 
 void	__attribute__((weak)) keyDA();
 void  __attribute__((weak)) keyDB();
+void  __attribute__((weak)) keyDX();
+void  __attribute__((weak)) keyDY();
+void  __attribute__((weak)) keyDStart();
+void  __attribute__((weak)) keyDSelect();
 void	__attribute__((weak)) keyDUp();
 void	__attribute__((weak)) keyDDown();
 void	__attribute__((weak)) keyDLeft();
@@ -27,6 +33,10 @@ void	__attribute__((weak)) keyDRight();
 
 void	__attribute__((weak)) keyUA();
 void  __attribute__((weak)) keyUB();
+void  __attribute__((weak)) keyUX();
+void  __attribute__((weak)) keyUY();
+void  __attribute__((weak)) keyUStart();
+void  __attribute__((weak)) keyUSelect();
 void	__attribute__((weak)) keyUUp();
 void	__attribute__((weak)) keyUDown();
 void	__attribute__((weak)) keyULeft();

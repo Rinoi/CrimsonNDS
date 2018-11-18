@@ -16,7 +16,7 @@ void Engine::timerCallBack()
 {
   Engine::realTime = (Engine::realTime + 1) % 8;
 }
-  
+
 Engine::Engine()
 {
 
@@ -52,7 +52,7 @@ bool		Engine::init()
   timerStart(0, ClockDivider_1024, TIMER_FREQ_1024(8), Engine::timerCallBack);
 
   GMode::setCurrent<ModeA>();
-    
+
   oamInit(&oamMain, SpriteMapping_1D_128, false);
   oamInit(&oamSub, SpriteMapping_1D_128, false);
 
@@ -69,16 +69,16 @@ bool		Engine::update()
 
   this->bNext = false;
   if (this->timeId != time)
-    {
-      this->timeId = time;
-      this->bNext = true;
-    }
+  {
+    this->timeId = time;
+    this->bNext = true;
+  }
 
   GMode::current->startUpdate();
   
   if (enginePreUpdate && enginePreUpdate() == false)
     return (false);
-    
+
   scanKeys();
 
   
@@ -86,10 +86,18 @@ bool		Engine::update()
   keys = keysUp();
   if((keys & KEY_A) && keyUA)
     keyUA();
+  if((keys & KEY_X) && keyUX)
+    keyUX();
+  if((keys & KEY_Y) && keyUY)
+    keyUY();
   if((keys & KEY_B) && keyUB)
     keyUB();
   if((keys & KEY_UP) && keyUUp)
     keyUUp();
+  if((keys & KEY_SELECT) && keyUSelect)
+    keyUSelect();
+  if((keys & KEY_START) && keyUStart)
+    keyUStart();
   if((keys & KEY_DOWN) && keyUDown)
     keyUDown();
   if((keys & KEY_LEFT) && keyULeft)
@@ -102,8 +110,16 @@ bool		Engine::update()
   keys = keysDown();
   if((keys & KEY_A) && keyDA)
     keyDA();
+  if((keys & KEY_X) && keyDX)
+    keyDX();
+  if((keys & KEY_Y) && keyDY)
+    keyDY();
   if((keys & KEY_B) && keyDB)
     keyDB();
+  if((keys & KEY_SELECT) && keyDSelect)
+    keyDSelect();
+  if((keys & KEY_START) && keyDStart)
+    keyDStart();
   if((keys & KEY_UP) && keyDUp)
     keyDUp();
   if((keys & KEY_DOWN) && keyDDown)
@@ -124,20 +140,28 @@ bool		Engine::update()
     keyLeft();
   if((keys & KEY_RIGHT) && keyRight)
     keyRight();
+  if((keys & KEY_SELECT) && keySelect)
+    keySelect();
+  if((keys & KEY_START) && keyStart)
+    keyStart();
   if((keys & KEY_A) && keyA)
     keyA();
   if((keys & KEY_B) && keyB)
     keyB();
+  if((keys & KEY_X) && keyX)
+    keyX();
+  if((keys & KEY_Y) && keyY)
+    keyY();
   //KEY
 
 
   if((keys & KEY_TOUCH) && onTouch)
-    {
-      touchPosition touch;
-      
-      touchRead(&touch);
-      onTouch(touch);
-    }
+  {
+    touchPosition touch;
+
+    touchRead(&touch);
+    onTouch(touch);
+  }
 
   
   if (engineUpdate && engineUpdate() == false)
