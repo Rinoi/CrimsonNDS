@@ -9,7 +9,7 @@ class BColliderMap : public IColliderMap
   static ColliderTile   CTile;
 
 public:
-  
+
   BColliderMap(BMap *bMap, const vec2 &mul, const std::vector<u16> &collider);
   virtual ~BColliderMap() = default;
 
@@ -18,8 +18,12 @@ public:
 
   u16			getInMap(int x, int y) const;
 
+  void		addCollider(Collider *c);
+  void		removeCollider(Collider *);
+
 private:
 
+  Collider	*checkList(int x, int y) const;
   ColliderTile		*setColiderTile(u16 idx, const vec2f &ptn) const;
   bool			isACollider(int x, int y) const;
 
@@ -27,4 +31,5 @@ private:
   BMap			*bMap;
   vec2			mul;
   std::vector<u16>	collider;
+  std::list<Collider *>	colliderList;
 };

@@ -39,7 +39,7 @@ bool			Sprite::updateSprites()
 	  Sprite *tmp = (*it);
 
 	  it = Sprite::spriteList.erase(it);
-	  
+
 	  delete tmp;
 	}
       else
@@ -91,7 +91,7 @@ Sprite::Sprite(Type type, SpriteSize size, SpriteSheet *spriteSheet, u16 idx,
   this->pos = {0, 0};
   this->v = {0.0, 0.0};
   this->lifeSpan = -1;
-  
+
   this->bUpdate = true;
   this->collider = NULL;
   this->init();
@@ -101,7 +101,7 @@ Sprite::~Sprite()
 {
   if (this->collider != NULL)
     delete this->collider;
-  
+
   oamClearSprite(this->type == MAIN ? &oamMain : &oamSub,
 		 this->id);
   (this->type == Sprite::MAIN ? mainId : subId)[this->id] = false;
@@ -135,7 +135,7 @@ bool			Sprite::init()
   Sprite::newSpriteList.push_back(this);
   this->initGfx();
   this->update();
-  
+
   return (true);
 }
 
@@ -156,11 +156,11 @@ void			Sprite::initGfx()
 bool			Sprite::update()
 {
   this->move();
-  
+
   if (this->bUpdate == true)
     {
       this->bUpdate = false;
-      
+
       oamSet(this->type == MAIN ? &oamMain : &oamSub,
 	     this->id,
 	     (int)(this->pos.x + (this->ref == ABSOLUTE ? this->pScroll.x : 0)) % 256,
@@ -184,7 +184,7 @@ u16			Sprite::getNewId()
 {
   bool			*tab;
   int			i = 0;
-  
+
   if (this->type == Sprite::MAIN)
     tab = mainId;
   else
@@ -206,7 +206,7 @@ u16			Sprite::getNewId()
 void			Sprite::move()
 {
   vec2f			v = this->v;
-  
+
   if (this->collider != NULL)
     {
       if (this->collider->willCollide({0, 0}) == true)
@@ -240,11 +240,11 @@ void			Sprite::move()
 }
 
 void			Sprite::addCollider(const vec2f &add, const vec2f &size,
-					    IColliderMap *colliderMap, u16 colliderIdx)
+					    IColliderMap *colliderMap, u16 objId)
 {
   if (this->collider != NULL)
     delete this->collider;
-  this->collider = new Collider(this->pos, add, size, colliderMap, colliderIdx, this);
+  this->collider = new Collider(this->pos, add, size, colliderMap, this, objId);
 }
 
 void			Sprite::setPos(const vec2f &pos)

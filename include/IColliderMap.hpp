@@ -14,7 +14,9 @@ class IColliderMap
 {
 public:
   virtual ~IColliderMap() = default;
-  
+
   virtual bool		getCollider(int x, int y) const = 0;
   virtual Collider	*get(int x, int y) const = 0;
+  virtual void		addCollider(Collider *c) = 0;
+  virtual void		removeCollider(Collider *c) = 0;
 };

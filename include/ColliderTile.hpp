@@ -8,7 +8,7 @@ class ColliderTile : public Collider
 {
 public:
   ColliderTile(IColliderMap *colliderMap, const vec2f &pos, u16 idx) :
-    Collider(this->pos, {0, 0}, {1, 1}, colliderMap, 0, &this->idx)
+    Collider(this->pos, {0, 0}, {1, 1}, colliderMap, &this->idx, 0)
   {
     this->pos = pos;
     this->idx = idx;
@@ -29,7 +29,7 @@ public:
   {
     this->pos = pos;
   }
-  
+
 private:
   vec2f		pos;
   u16		idx;

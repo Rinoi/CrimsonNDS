@@ -9,18 +9,24 @@ Collider	*Collider::currentTest = NULL;
 ColliderTest	Collider::cTest(NULL, NULL);
 
 Collider::Collider(vec2f &vec, const vec2f &add, const vec2f &size,
-			   IColliderMap *colliderMap, u16 colliderIdx, void *obj) :
+			   IColliderMap *colliderMap, void *obj, u16 objId) :
   ptn(vec)
 {
   this->add = add;
   this->size = size;
   this->map = colliderMap;
   this->obj = obj;
+	this->objId = objId;
+	b = false;
+	//void *ptn = (void *)(&this->map->addCollider);
+	//this->map->addCollider(this);
+	//this->map->get(0, 0);
 }
 
 Collider::~Collider()
 {
-
+	if (this->map != NULL)
+		this->map->removeCollider(this);
 }
 
 ColliderTest		*Collider::setTest(Collider *in, Collider *on)
@@ -34,9 +40,14 @@ ColliderTest		*Collider::getTest(const vec2f &vector)
   int           x = this->ptn.x + this->add.x + vector.x;
   int           y = this->ptn.y + this->add.y + vector.y;
   Collider	*on = NULL;
-  
+
   Collider::currentTest = this;
 
+	if (b == false)
+	{
+		this->map->addCollider(this);
+		b = true;
+	}
   if (vector.x != 0)
     {
       if (vector.x > 0)

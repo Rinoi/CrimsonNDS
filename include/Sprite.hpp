@@ -38,7 +38,7 @@ private:
   static std::list<Sprite *>	spriteList;
   static std::list<Sprite *>	newSpriteList;
 
-  
+
 public:
 
   Sprite(Type type, SpriteSize size, SpriteSheet *spriteSheet, u16 idx,
@@ -55,32 +55,35 @@ public:
   void		destroy();
 
   void		addCollider(const vec2f &add, const vec2f &size,
-			    IColliderMap *colliderMap, u16 colliderIdx = 4);
+			    IColliderMap *colliderMap, u16 objId = 1);
 
 
 public:
 
     const vec2f	&getPos() const
 	{return this->pos;}
-    
+
     Collider	*getCollider() const
 	{return this->collider;}
-    
+
     const char* getType() const {
 	if (this->type == MAIN)
 	    return "MAIN";
 	else
 	    return "SUB";
     }
-    
+
 protected:
 
   bool		init();
   void		initGfx();
   bool		update();
   void		setSize();
-  void		move();
   u16		getNewId();
+
+protected:
+
+  virtual void		move();
 
 protected:
 
@@ -92,7 +95,7 @@ protected:
 
   vec2		size;
   bool		bUpdate;
-  
+
   u16		id;
   vec2f		pos;
   vec2f		pScroll;
