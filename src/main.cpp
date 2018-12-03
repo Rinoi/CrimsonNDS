@@ -27,7 +27,7 @@ SpriteSheet	mariolikeSheet((unsigned int *)mariolikeTiles, mariolikeTilesLen,
 			       pal, palLen,
 			       96, 160);
 //global for game
-TBackground2	*bg;
+TBackground	*bg;
 TBackground	*bg2;
 Sprite		*a;
 BColliderMap	*CMap;
@@ -39,10 +39,6 @@ int		sx = 0;
 int		bgx = 0;
 vec2f		g_v = {2, 0};
 int scrolly = 4*16;
-
-
-
-
 
 
 
@@ -66,7 +62,8 @@ u16		*maps[nbMap] =
 
 bool		engineInit()
 {
-  bg = new TBackground2(TBackground2::MAIN, BgSize_T_512x256,  &mariolikeSheet, Layer10, 16, 16, 1, maps);
+//  bg = new TBackground2(TBackground2::MAIN, BgSize_T_512x256,  &mariolikeSheet, Layer10, 16, 16, 1, maps);
+  bg = new TBackground(TBackground::MAIN, BgSize_T_512x256,  &mariolikeSheet, Layer10, 16, 16, 1);
   bg2 = new TBackground(TBackground::MAIN, BgSize_T_512x256, &mariolikeSheet, Layer10, 16, 16, 0);
 
   BMap	mapBG({16, 16}, {2, 1}, true);
@@ -115,20 +112,20 @@ bool		enginePreUpdate()
 	return (true);
 }
 
-//void		changeMap(int &bmap)
-//{
-//	if (curmap == 6)
-//		curmap = 0;
-//  u16	*map = maps[curmap++];
-//
-//  bMap->setMap(bmap, map);
-//  bg->addInMapT16(map, 16, 16, bmap);
-//  //CMap = new BColliderMap(bMap, {16, 16}, {3,4,5,7,8,9,10,11,12,13,14,15,16,17,21,22,23,28,29});
-//  //a->addCollider({1, 1}, {14, 14}, CMap);
-//
-//  bmap = (bmap + 1) % 2;
-//  // printf("change %p\n", map);
-//}
+void		changeMap(int &bmap)
+{
+	if (curmap == 6)
+		curmap = 0;
+ u16	*map = maps[curmap++];
+
+ bMap->setMap(bmap, map);
+ bg->addInMapT16(map, 16, 16, bmap);
+ //CMap = new BColliderMap(bMap, {16, 16}, {3,4,5,7,8,9,10,11,12,13,14,15,16,17,21,22,23,28,29});
+ //a->addCollider({1, 1}, {14, 14}, CMap);
+
+ bmap = (bmap + 1) % 2;
+ // printf("change %p\n", map);
+}
 
 bool		engineUpdate()
 {
@@ -143,14 +140,14 @@ bool		engineUpdate()
   // printf("%d\n", sx);
   if (b == false && sx >= 256)
     {
-      bg->changeMap(bmap, curmap);
+	//bg->changeMap(bmap, curmap);
       b = true;
     }
   if (sx >= 512)
     {
       //a->setPos(a->getPos().x - 512, a->getPos().y);
       sx = 0;
-      bg->changeMap(bmap, curmap);
+      //bg->changeMap(bmap, curmap);
       b = false;
     }
   return (true);
