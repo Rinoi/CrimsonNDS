@@ -21,7 +21,7 @@ public:
   TBackground(const Type &type, BgSize size, SpriteSheet *spriteSheet, u16 *map, u_int width, u_int height, int depth = 0);
   virtual ~TBackground();
 
-private:
+protected:
 
   u16		getIdx16(u16 idx);
 
@@ -44,11 +44,11 @@ public:
   u16		*getGfx();
   u16		*getMap();
 
-private:
+protected:
 
   void		init(BgSize size);
 
-private:
+protected:
 
   int		depth;
   int		id;

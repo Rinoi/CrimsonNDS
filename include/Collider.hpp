@@ -53,6 +53,10 @@ public:
   {
     return (this->objId);
   }
+   void       setObjId(u16 objid)
+   {
+       this->objId = objid;
+   }
 
 protected:
 

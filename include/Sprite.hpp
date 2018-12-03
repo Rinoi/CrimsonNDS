@@ -43,6 +43,12 @@ public:
 
   Sprite(Type type, SpriteSize size, SpriteSheet *spriteSheet, u16 idx,
 	     Reference ref = Reference::ABSOLUTE);
+  Sprite(Type type, SpriteSize size, SpriteSheet *spriteSheet, u16 idx,
+         int x, int y,
+	     Reference ref = Reference::ABSOLUTE);
+
+
+
 
   virtual ~Sprite();
 
@@ -105,4 +111,12 @@ protected:
   u16		*gfx;
 
   Collider	*collider;
+
+  public:
+//    int       getId() {
+//    return 0;
+//}
+   u16		getIdx(){
+        return this->id;
+   }
 };

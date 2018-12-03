@@ -97,6 +97,24 @@ Sprite::Sprite(Type type, SpriteSize size, SpriteSheet *spriteSheet, u16 idx,
   this->init();
 }
 
+Sprite::Sprite(Type type, SpriteSize size, SpriteSheet *spriteSheet, u16 idx, int x, int y
+		       ,Reference ref)
+{
+  this->type = type;
+  this->spriteSize = size;
+  this->spriteSheet = spriteSheet;
+  this->idx = idx;
+  this->ref = ref;
+
+  this->pos = {x, y};
+  this->v = {0.0, 0.0};
+  this->lifeSpan = -1;
+
+  this->bUpdate = true;
+  this->collider = NULL;
+  this->init();
+}
+
 Sprite::~Sprite()
 {
   if (this->collider != NULL)
@@ -163,8 +181,8 @@ bool			Sprite::update()
 
       oamSet(this->type == MAIN ? &oamMain : &oamSub,
 	     this->id,
-	     (int)(this->pos.x + (this->ref == ABSOLUTE ? this->pScroll.x : 0)) % 256,
-	     (int)(this->pos.y + (this->ref == ABSOLUTE ? this->pScroll.y : 0)) % 256,
+	     (int)(this->pos.x + this->pScroll.x) % 256,
+	     (int)(this->pos.y + this->pScroll.y) % 256,
 	     2,
 	     0,
 	     this->spriteSize,

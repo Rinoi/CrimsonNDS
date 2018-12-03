@@ -30,6 +30,15 @@ public:
     this->pos = pos;
   }
 
+  const vec2f &getPos() const
+  {
+    return this->pos;
+  }
+
+  const u16		getIdx() const
+  {
+    return this->idx;
+  }
 private:
   vec2f		pos;
   u16		idx;

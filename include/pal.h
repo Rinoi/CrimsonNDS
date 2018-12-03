@@ -1,5 +1,5 @@
 #pragma once
 
-#define palLen 404
+#define palLen 204
 
-extern const unsigned short pal[202];
+extern const unsigned short pal[102];
