@@ -13,7 +13,7 @@
 #include "Sprite.hpp"
 #include "Animation.hpp"
 #include "TBackground.hpp"
-#include "TBackground2.hpp"
+#include "TBackgroundb.hpp"
 #include "BColliderMap.hpp"
 #include "BMap.hpp"
 #include "pixel_tiles.h"
@@ -27,7 +27,7 @@ SpriteSheet	mariolikeSheet((unsigned int *)mariolikeTiles, mariolikeTilesLen,
 			       pal, palLen,
 			       96, 160);
 //global for game
-TBackground	*bg;
+TBackgroundb	*bg;
 TBackground	*bg2;
 Sprite		*a;
 BColliderMap	*CMap;
@@ -62,8 +62,8 @@ u16		*maps[nbMap] =
 
 bool		engineInit()
 {
-//  bg = new TBackground2(TBackground2::MAIN, BgSize_T_512x256,  &mariolikeSheet, Layer10, 16, 16, 1, maps);
-  bg = new TBackground(TBackground::MAIN, BgSize_T_512x256,  &mariolikeSheet, Layer10, 16, 16, 1);
+     bg = new TBackgroundb(TBackgroundb::MAIN, BgSize_T_512x256,  &mariolikeSheet, Layer10, 16, 16, 1, maps);
+  //bg = new TBackground(TBackground::MAIN, BgSize_T_512x256,  &mariolikeSheet, Layer10, 16, 16, 1);
   bg2 = new TBackground(TBackground::MAIN, BgSize_T_512x256, &mariolikeSheet, Layer10, 16, 16, 0);
 
   BMap	mapBG({16, 16}, {2, 1}, true);
@@ -74,18 +74,20 @@ bool		engineInit()
   mapBG.init(0);
   bMap->init(0);
   bMap->setMap(0, Layer10);
-  bMap->setMap(1, Layer10);
+  //bMap->setMap(1, Layer10);
   bg->addInMapT16(Layer10, 16, 16, 0);
-  bg->addInMapT16(Layer10, 16, 16, 1);
+  //bg->addInMapT16(Layer10, 16, 16, 1);
   bg2->addInMapT16(mapBG.getData(), 16, 16, 0);
-  bg2->addInMapT16(mapBG.getData(), 16, 16, 1);
-  bg->addInMapT16(bMap->getMap(1).data, 16, 16, 1);
+  //bg2->addInMapT16(mapBG.getData(), 16, 16, 1);
+  //bg->addInMapT16(bMap->getMap(1).data, 16, 16, 1);
   bg->scroll(0, scrolly);
 
-  a = new Sprite(Sprite::MAIN, SpriteSize_16x16, &mariolikeSheet, 36, Sprite::ABSOLUTE);
+  a = new Sprite(Sprite::MAIN, SpriteSize_16x16, &mariolikeSheet, 36, Sprite::RELATIVE);
   a->setPos(0,0);
+  a->setV(0, 1);
   //a->setPos(50, 130);
   a->addCollider({1, 1}, {14, 14}, CMap, 2);
+    a->scroll(0, -scrolly);
 
   return (true);
 }
@@ -94,6 +96,8 @@ bool		enginePreUpdate()
 {
 	g_v = {v, 0};
 
+    a->setV(0, 1);
+  return (true);
 	if (a->getPos().x - sx < 256/2)
 		g_v.x += v / 3.;
 
@@ -112,42 +116,45 @@ bool		enginePreUpdate()
 	return (true);
 }
 
-void		changeMap(int &bmap)
-{
-	if (curmap == 6)
-		curmap = 0;
- u16	*map = maps[curmap++];
-
- bMap->setMap(bmap, map);
- bg->addInMapT16(map, 16, 16, bmap);
- //CMap = new BColliderMap(bMap, {16, 16}, {3,4,5,7,8,9,10,11,12,13,14,15,16,17,21,22,23,28,29});
- //a->addCollider({1, 1}, {14, 14}, CMap);
-
- bmap = (bmap + 1) % 2;
- // printf("change %p\n", map);
-}
+//void		changeMap(int &bmap)
+//{
+//	if (curmap == 6)
+//		curmap = 0;
+// u16	*map = maps[curmap++];
+//
+// bMap->setMap(bmap, map);
+// bg->addInMapT16(map, 16, 16, bmap);
+// //CMap = new BColliderMap(bMap, {16, 16}, {3,4,5,7,8,9,10,11,12,13,14,15,16,17,21,22,23,28,29});
+// //a->addCollider({1, 1}, {14, 14}, CMap);
+//
+// bmap = (bmap + 1) % 2;
+// // printf("change %p\n", map);
+//}
 
 bool		engineUpdate()
 {
   static int	bmap = 0;
   static bool	b = false;
-  
+
+  return (true);
   //bg2->scroll(bgx, scrolly);
 //  bg->scroll(sx, scrolly);
 //  a->scroll(-sx, 0);
-  sx += v;
+  //sx += v;
   bgx += v / 2 > 0 ? v / 2 : 1;
   // printf("%d\n", sx);
   if (b == false && sx >= 256)
     {
-	//bg->changeMap(bmap, curmap);
+	bg->changeMap(bmap, curmap);
+	curmap++;
       b = true;
     }
   if (sx >= 512)
     {
       //a->setPos(a->getPos().x - 512, a->getPos().y);
       sx = 0;
-      //bg->changeMap(bmap, curmap);
+      bg->changeMap(bmap, curmap);
+      curmap++;
       b = false;
     }
   return (true);
@@ -167,10 +174,13 @@ void		keyUA()
 
 void		keyRight()
 {
+    a->setV(1, 0);
+    return;
     if (a->getPos().x == 200) {
         sx += v;
         //bgx += v / 2 > 0 ? v / 2 : 1;
-        bg->scroll(sx, scrolly);
+    bg->scroll(sx, scrolly);
+
     }   else
 	    a->setPos(a->getPos().x + v, a->getPos().y);
 
@@ -178,10 +188,11 @@ void		keyRight()
 
 void		keyLeft()
 {
+    a->setV(-1, 0);
+    return;
 	if (a->getPos().x == 20) {
 	        sx -= v;
             //bgx -= v / 2 > 0 ? v / 2 : 1;
-            bg->scroll(-sx, scrolly);
     } else
 	    a->setPos(a->getPos().x - v, a->getPos().y);
 }
